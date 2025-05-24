@@ -1,0 +1,24 @@
+name: CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.20'
+    - name: Backend Test
+      run: |
+        cd backend
+        go test ./...
+    - name: Frontend Test
+      run: |
+        cd frontend
+        npm install
+        npm test -- --watchAll=false
+    - name: Build Docker images
+      run: |
+        docker build -t aurelia-backend ./backend
+        docker build -t aurelia-frontend ./frontend
